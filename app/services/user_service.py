@@ -1,6 +1,7 @@
 from schemas.user import UserAuthSchema
 from models.user import User
 from core.security import get_password, verify_password
+from typing import Optional
 
 class UserService: 
     @staticmethod
@@ -12,3 +13,17 @@ class UserService:
         )
         await new_user.save()
         return new_user
+    
+    @staticmethod
+    async def get_user_by_email(email:str) -> Optional[User]:
+        user = await User.find_one(User.email == email)
+        return user
+    
+    @staticmethod
+    async def autheticate(email:str, password:str) -> Optional[User]:
+        user = await UserService.get_user_by_email(email=email)
+        if not user: 
+            return None
+        if not verify_password(password=password, hashed_password=User.hash_password): 
+            return None
+        return user
