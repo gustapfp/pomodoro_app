@@ -2,6 +2,7 @@ from schemas.user import UserAuthSchema
 from models.user import User
 from core.security import get_password, verify_password
 from typing import Optional
+from uuid import UUID, uuid4
 
 class UserService: 
     @staticmethod
@@ -24,6 +25,11 @@ class UserService:
         user = await UserService.get_user_by_email(email=email)
         if not user: 
             return None
-        if not verify_password(password=password, hashed_password=User.hash_password): 
+        if not verify_password(password=password, hashed_password=user.hash_password): 
             return None
+        return user
+    
+    @staticmethod
+    async def get_user_by_id(id: UUID) -> Optional[User]:
+        user = await User.find_one(User.user_id == id)
         return user

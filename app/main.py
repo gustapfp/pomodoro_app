@@ -8,8 +8,12 @@ from api.api_v1.router import router
 tags_metadata = [
     {
         'name': 'Users',
-        'description': 'Operations with users and authentication'
+        'description': 'Operations with users'
      },
+     {
+         'name': 'Auth',
+         'description': 'Authentication operation and token generation'
+     }
 ] 
 
 app = FastAPI(
