@@ -3,6 +3,7 @@ from models.user import User
 from models.task import Task
 from typing import List
 from uuid import UUID
+from fastapi import HTTPException, status
 
 class TaskService:
     
@@ -20,11 +21,16 @@ class TaskService:
     @staticmethod
     async def get_task(user: User, task_id: UUID) -> Task:
         target_task = await Task.find_one(Task.owner.id == user.id, Task.task_id == task_id)
+        if not target_task:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The task your are loking for doesn't exists ")
         return target_task
     
     @staticmethod
     async def update_task(user: User, data: UpdateTaskSchema, task_id: UUID) -> Task:
         target_task = await TaskService.get_task(user=user, task_id=task_id)
+        if not target_task:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The task your are loking for doesn't exists ")
+        
         await target_task.update({
             '$set': data.dict(
                 exclude_unset=True,   
@@ -36,6 +42,9 @@ class TaskService:
     @staticmethod
     async def delete_task(user:User, task_id: UUID) -> Task:
         target_task = await TaskService.get_task(user=user, task_id=task_id)
+
         if target_task:
             return await target_task.delete()
+        else:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="The task your are loking for doesn't exists ")
         
