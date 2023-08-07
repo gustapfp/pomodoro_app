@@ -4,6 +4,7 @@ from schemas.user import UserAuthSchema, UserResponseDetailSchema
 from services.user_service import UserService
 import pymongo
 from api.dependencies.user_dependencies import get_current_user
+
 user_router = APIRouter(
     prefix='/users',
     tags = ['Users']

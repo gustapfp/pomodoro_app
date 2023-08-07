@@ -3,6 +3,7 @@ from core.config import settings
 from beanie import init_beanie 
 from motor.motor_asyncio import AsyncIOMotorClient
 from models.user import User
+from models.task import Task
 from api.api_v1.router import router
 
 tags_metadata = [
@@ -13,6 +14,10 @@ tags_metadata = [
      {
          'name': 'Auth',
          'description': 'Authentication operation and token generation'
+     }, 
+     {
+         'name': 'Tasks',
+         'description': 'CRUD operations with tasks'
      }
 ] 
 
@@ -32,5 +37,6 @@ async def app_init():
         database = client_db,
         document_models = [
             User,
+            Task,
                            ]
     )
